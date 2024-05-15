@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My App</title>
+</head>
+<body>
+    <button id="xverseButton">Xverse</button>
+    <button id="leatherButton">Leather</button>
+    <button id="unisatButton">Unisat</button>
+    <button id="okxButton">OKX</button>
+    <script>
+        async function connectXverse() {
+            await window.xverseconnect();
+        }
+
+        async function getAddressFromLeather() {
+            const response = await window.LeatherProvider?.request("getAddresses");
+            console.log(response);
+        }
+
+        async function requestAccountsFromUnisat() {
+            const response = await window.unisat.requestAccounts();
+            console.log(response);
+            console.log(window.unisat.getAccounts());
+        }
+
+        async function connectBitcoinFromOkx() {
+            const response = await window.okxwallet.bitcoin.connect();
+            console.log(response);
+            console.log(window.unisat.getAccounts());
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var script = document.createElement('script');
+            script.src = "dist/bundle.js";
+            document.body.appendChild(script);
+
+            // Attach event listeners after the script is loaded
+            script.onload = function() {
+                console.log("Exported functions from bundle.js:", window);
+                document.getElementById("xverseButton").addEventListener("click", connectXverse);
+
+                if (window.LeatherProvider) {
+                    console.log("Leather installed");
+                    document.getElementById("leatherButton").addEventListener("click", getAddressFromLeather);
+                } else {
+                    console.log("Leather not found");
+                }
+
+                if (window.unisat) {
+                    console.log("Unisat installed");
+                    document.getElementById("unisatButton").addEventListener("click", requestAccountsFromUnisat);
+                } else {
+                    console.log("Unisat not found");
+                }
+
+                if (window.okxwallet) {
+                    console.log("OKX installed");
+                    document.getElementById("okxButton").addEventListener("click", connectBitcoinFromOkx);
+                } else {
+                    console.log("OKX not found");
+                }
+            };
+        });
+    </script>
+</body>
+</html>
