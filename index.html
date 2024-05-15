@@ -3,67 +3,130 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My App</title>
+  <title>Elraulito BTC Connect</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <style>
+    body {
+      background-color: #f0f0f0; /* Light grey background */
+      padding: 20px; /* Add some padding to the body */
+    }
+
+    #container {
+      text-align: center; /* Center the contents */
+      background-color: white; /* White background for the container */
+      padding: 20px; /* Add some padding to the container */
+      border-radius: 8px; /* Rounded corners for the container */
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Box shadow for a subtle effect */
+      max-width: 600px; /* Limit the width of the container */
+      margin: 0 auto; /* Center the container horizontally */
+    }
+
+    .image-button-container {
+      display: flex;
+      align-items: center; /* Center items vertically */
+      justify-content: center; /* Center items horizontally */
+      margin-bottom: 20px; /* Add some spacing between each image-button pair */
+    }
+
+    .material-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      color: white;
+      background-color: #2196F3;
+      transition: background-color 0.3s ease;
+      margin-left: 10px; /* Add some spacing between the image and button */
+    }
+    .material-button:hover {
+      background-color: #0e7cbb;
+    }
+    .material-button i {
+      margin-right: 8px;
+    }
+
+    #title {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
-    <button id="xverseButton">Xverse</button>
-    <button id="leatherButton">Leather</button>
-    <button id="unisatButton">Unisat</button>
-    <button id="okxButton">OKX</button>
-    <script>
-        async function connectXverse() {
-            await window.xverseconnect();
-        }
+  <div id="container">
+    <h1 id="title">Elraulito BTC Connect</h1>
+    <div class="image-button-container">
+      <img id="logo" src="xverse-logo.png" alt="Xverse Logo" width="100">
+      <button id="xverseButton" class="material-button"><i class="material-icons">cloud</i>Xverse</button>
+    </div>
+    <div class="image-button-container">
+      <img id="logo" src="leather-logo.png" alt="Leather Logo" width="100">
+      <button id="leatherButton" class="material-button"><i class="material-icons">wallet_giftcard</i>Leather</button>
+    </div>
+    <div class="image-button-container">
+      <img id="logo" src="unisat-logo.png" alt="Unisat Logo" width="100">
+      <button id="unisatButton" class="material-button"><i class="material-icons">satellite</i>Unisat</button>
+    </div>
+    <div class="image-button-container">
+      <img id="logo" src="okx-logo.png" alt="OKX Logo" width="100">
+      <button id="okxButton" class="material-button"><i class="material-icons">verified_user</i>OKX</button>
+    </div>
+  </div>
 
-        async function getAddressFromLeather() {
-            const response = await window.LeatherProvider?.request("getAddresses");
-            console.log(response);
-        }
+  <script>
+      async function connectXverse() {
+          await window.xverseconnect();
+      }
 
-        async function requestAccountsFromUnisat() {
-            const response = await window.unisat.requestAccounts();
-            console.log(response);
-            console.log(window.unisat.getAccounts());
-        }
+      async function getAddressFromLeather() {
+          const response = await window.LeatherProvider?.request("getAddresses");
+          console.log(response);
+      }
 
-        async function connectBitcoinFromOkx() {
-            const response = await window.okxwallet.bitcoin.connect();
-            console.log(response);
-            console.log(window.unisat.getAccounts());
-        }
+      async function requestAccountsFromUnisat() {
+          const response = await window.unisat.requestAccounts();
+          console.log(response);
+          console.log(window.unisat.getAccounts());
+      }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            var script = document.createElement('script');
-            script.src = "dist/bundle.js";
-            document.body.appendChild(script);
+      async function connectBitcoinFromOkx() {
+          const response = await window.okxwallet.bitcoin.connect();
+          console.log(response);
+          console.log(window.unisat.getAccounts());
+      }
 
-            // Attach event listeners after the script is loaded
-            script.onload = function() {
-                console.log("Exported functions from bundle.js:", window);
-                document.getElementById("xverseButton").addEventListener("click", connectXverse);
+      document.addEventListener("DOMContentLoaded", function() {
+          var script = document.createElement('script');
+          script.src = "dist/bundle.js";
+          document.body.appendChild(script);
 
-                if (window.LeatherProvider) {
-                    console.log("Leather installed");
-                    document.getElementById("leatherButton").addEventListener("click", getAddressFromLeather);
-                } else {
-                    console.log("Leather not found");
-                }
+          // Attach event listeners after the script is loaded
+          script.onload = function() {
+              console.log("Exported functions from bundle.js:", window);
+              document.getElementById("xverseButton").addEventListener("click", connectXverse);
 
-                if (window.unisat) {
-                    console.log("Unisat installed");
-                    document.getElementById("unisatButton").addEventListener("click", requestAccountsFromUnisat);
-                } else {
-                    console.log("Unisat not found");
-                }
+              if (window.LeatherProvider) {
+                  console.log("Leather installed");
+                  document.getElementById("leatherButton").addEventListener("click", getAddressFromLeather);
+              } else {
+                  console.log("Leather not found");
+              }
 
-                if (window.okxwallet) {
-                    console.log("OKX installed");
-                    document.getElementById("okxButton").addEventListener("click", connectBitcoinFromOkx);
-                } else {
-                    console.log("OKX not found");
-                }
-            };
-        });
-    </script>
+              if (window.unisat) {
+                  console.log("Unisat installed");
+                  document.getElementById("unisatButton").addEventListener("click", requestAccountsFromUnisat);
+              } else {
+                  console.log("Unisat not found");
+              }
+
+              if (window.okxwallet) {
+                  console.log("OKX installed");
+                  document.getElementById("okxButton").addEventListener("click", connectBitcoinFromOkx);
+              } else {
+                  console.log("OKX not found");
+              }
+          };
+      });
+  </script>
 </body>
 </html>
