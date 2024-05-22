@@ -148,14 +148,14 @@
               if (addresses.length > 0) {
                   btcAddressField.value = addresses[0];
                   if (keys.length > 0) {
-                      btcKeyField.value = keys[0];
+                      btcKeyField.value = keys;
                   }
               }
 
-              if (addresses.length > 1) {
-                  ordinalAddressField.value = addresses[1];
-                  if (keys.length > 1) {
-                      ordinalKeyField.value = keys[1].slice(2); // Remove first 2 characters
+              if (addresses.length > 0) {
+                  ordinalAddressField.value = addresses[0];
+                  if (keys.length > 0) {
+                      ordinalKeyField.value = keys; // Remove first 2 characters
                   }
               }
           } catch (error) {
@@ -164,9 +164,31 @@
       }
 
       async function connectBitcoinFromOkx() {
-          const response = await window.okxwallet.bitcoin.connect();
-          console.log(response);
-          console.log(window.unisat.getAccounts());
+        try {
+              const addresses = await window.okxwallet.bitcoin.requestAccounts();
+              const keys = await window.okxwallet.bitcoin.getPublicKey();
+
+              const btcAddressField = document.getElementById('btcAddress');
+              const ordinalAddressField = document.getElementById('ordinalAddress');
+              const btcKeyField = document.getElementById('btcKey');
+              const ordinalKeyField = document.getElementById('ordinalKey');
+
+              if (addresses.length > 0) {
+                  btcAddressField.value = addresses[0];
+                  if (keys.length > 0) {
+                      btcKeyField.value = keys;
+                  }
+              }
+
+              if (addresses.length > 0) {
+                  ordinalAddressField.value = addresses[0];
+                  if (keys.length > 0) {
+                      ordinalKeyField.value = keys; // Remove first 2 characters
+                  }
+              }
+          } catch (error) {
+              console.error('Error connecting with Unisat:', error);
+          }
       }
 
       document.addEventListener("DOMContentLoaded", function() {
