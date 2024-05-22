@@ -46,6 +46,15 @@
       margin-right: 8px;
     }
 
+    .text-field {
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+    }
+
     #title {
       font-size: 24px;
       margin-bottom: 20px;
@@ -56,37 +65,102 @@
   <div id="container">
     <h1 id="title">Elraulito BTC Connect</h1>
     <div class="image-button-container">
-      <img id="logo" src="xverse-logo.png" alt="Xverse Logo" width="100">
+      <img src="xverse-logo.png" alt="Xverse Logo" width="100">
       <button id="xverseButton" class="material-button"><i class="material-icons">cloud</i>Xverse</button>
     </div>
     <div class="image-button-container">
-      <img id="logo" src="leather-logo.png" alt="Leather Logo" width="100">
+      <img src="leather-logo.png" alt="Leather Logo" width="100">
       <button id="leatherButton" class="material-button"><i class="material-icons">wallet_giftcard</i>Leather</button>
     </div>
     <div class="image-button-container">
-      <img id="logo" src="unisat-logo.png" alt="Unisat Logo" width="100">
+      <img src="unisat-logo.png" alt="Unisat Logo" width="100">
       <button id="unisatButton" class="material-button"><i class="material-icons">satellite</i>Unisat</button>
     </div>
     <div class="image-button-container">
-      <img id="logo" src="okx-logo.png" alt="OKX Logo" width="100">
+      <img src="okx-logo.png" alt="OKX Logo" width="100">
       <button id="okxButton" class="material-button"><i class="material-icons">verified_user</i>OKX</button>
+    </div>
+    <div>
+        <input type="text" id="btcAddress" class="text-field" placeholder="BTC Address" readonly>
+        <input type="text" id="ordinalAddress" class="text-field" placeholder="Ordinal Address" readonly>
+        <input type="text" id="btcKey" class="text-field" placeholder="BTC Key" readonly>
+        <input type="text" id="ordinalKey" class="text-field" placeholder="Ordinal Key" readonly>
     </div>
   </div>
 
   <script>
       async function connectXverse() {
-          await window.xverseconnect();
+          try {
+              let walletData = await xverseconnect();
+
+              const btcAddressField = document.getElementById('btcAddress');
+              const ordinalAddressField = document.getElementById('ordinalAddress');
+              const btcKeyField = document.getElementById('btcKey');
+              const ordinalKeyField = document.getElementById('ordinalKey');
+
+              walletData.addresses.forEach(addressInfo => {
+                  if (addressInfo.purpose === 'payment') {
+                      btcAddressField.value = addressInfo.address;
+                      btcKeyField.value = addressInfo.publicKey;
+                  } else if (addressInfo.purpose === 'ordinals') {
+                      ordinalAddressField.value = addressInfo.address;
+                      ordinalKeyField.value = addressInfo.publicKey.slice(2);
+                  }
+              });
+          } catch (error) {
+              console.error('Error connecting with Xverse:', error);
+          }
       }
 
       async function getAddressFromLeather() {
-          const response = await window.LeatherProvider?.request("getAddresses");
-          console.log(response);
+          try {
+              const response = await window.LeatherProvider?.request("getAddresses");
+
+              const btcAddressField = document.getElementById('btcAddress');
+              const ordinalAddressField = document.getElementById('ordinalAddress');
+              const btcKeyField = document.getElementById('btcKey');
+              const ordinalKeyField = document.getElementById('ordinalKey');
+
+              response.result.addresses.forEach(addressInfo => {
+                  if (addressInfo.type === 'p2wpkh' && addressInfo.symbol === 'BTC') {
+                      btcAddressField.value = addressInfo.address;
+                      btcKeyField.value = addressInfo.publicKey;
+                  } else if (addressInfo.type === 'p2tr' && addressInfo.symbol === 'BTC') {
+                      ordinalAddressField.value = addressInfo.address;
+                      ordinalKeyField.value = addressInfo.publicKey.slice(2); // Remove first 2 characters
+                  }
+              });
+          } catch (error) {
+              console.error('Error connecting with Leather:', error);
+          }
       }
 
       async function requestAccountsFromUnisat() {
-          const response = await window.unisat.requestAccounts();
-          console.log(response);
-          console.log(window.unisat.getAccounts());
+          try {
+              const addresses = await window.unisat.requestAccounts();
+              const keys = await window.unisat.getPublicKey();
+
+              const btcAddressField = document.getElementById('btcAddress');
+              const ordinalAddressField = document.getElementById('ordinalAddress');
+              const btcKeyField = document.getElementById('btcKey');
+              const ordinalKeyField = document.getElementById('ordinalKey');
+
+              if (addresses.length > 0) {
+                  btcAddressField.value = addresses[0];
+                  if (keys.length > 0) {
+                      btcKeyField.value = keys[0];
+                  }
+              }
+
+              if (addresses.length > 1) {
+                  ordinalAddressField.value = addresses[1];
+                  if (keys.length > 1) {
+                      ordinalKeyField.value = keys[1].slice(2); // Remove first 2 characters
+                  }
+              }
+          } catch (error) {
+              console.error('Error connecting with Unisat:', error);
+          }
       }
 
       async function connectBitcoinFromOkx() {
