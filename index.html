@@ -81,6 +81,11 @@
       <button id="okxButton" class="material-button"><i class="material-icons">verified_user</i>OKX</button>
     </div>
     <div>
+        <input type="text" id="hexPsbt" class="text-field" placeholder="PSBT Hex String">
+        <button id="signButton" class="material-button"><i class="material-icons">done</i>Sign PSBT Leather</button>
+        <button id="signButtonXverse" class="material-button"><i class="material-icons">done</i>Sign PSBT Xverse</button>
+    </div>
+    <div>
         <input type="text" id="btcAddress" class="text-field" placeholder="BTC Address" readonly>
         <input type="text" id="ordinalAddress" class="text-field" placeholder="Ordinal Address" readonly>
         <input type="text" id="btcKey" class="text-field" placeholder="BTC Key" readonly>
@@ -190,6 +195,57 @@
               console.error('Error connecting with Unisat:', error);
           }
       }
+
+      async function signPsbtLeather(hexPsbt) {
+    try {
+        // Get the hex PSBT value from the input field
+        const hexPsbt = document.getElementById('hexPsbt').value.trim();
+
+        // Example request parameters
+        const exampleParams = {
+            hex: hexPsbt,
+            network: 'mainnet', // Or 'Testnet' or other supported networks
+            broadcast: true // Whether to finalize and broadcast the transaction
+        };
+
+        // Prepare request parameters
+        const requestParams = { ...exampleParams };
+
+        // Make request to sign the PSBT
+        const response = await window.LeatherProvider.request('signPsbt', requestParams);
+
+        // Handle the response as needed
+        console.log(response);
+    } catch (error) {
+        // Handle errors
+        console.error(error);
+    }
+}
+
+async function signPsbtXverse() {
+    try {
+        // Get the hex PSBT value from the input field
+        const base64Psbt = document.getElementById('hexPsbt').value.trim();
+
+        console.log(base64Psbt)
+        // Make request to sign the PSBT
+        const response = await window.xversesign("33av9pdn8Xi6RCAkaXx99jnGkvd1MVnJJu",base64Psbt,[0])
+
+        // Handle the response as needed
+        console.log(response);
+    } catch (error) {
+        // Handle errors
+        console.error(error);
+    }
+}
+
+
+    document.getElementById("signButton").addEventListener("click", () => {
+    signPsbtLeather();
+});
+document.getElementById("signButtonXverse").addEventListener("click", () => {
+    signPsbtXverse();
+});
 
       document.addEventListener("DOMContentLoaded", function() {
           var script = document.createElement('script');
